@@ -292,8 +292,7 @@ class ExtZaloPayComponent extends AppComponent
      */
     private function _log(string $type, string $json, array $order): void
     {
-        $this->controller->loadComponent('ExtTiki');
-        $this->controller->ExtTiki->logIPN([
+        $this->logIPN([
             'from_source'     => 'zalopay',
             'message_type'    => $type,
             'message_created' => date('Y-m-d H:i:s'),
@@ -301,6 +300,16 @@ class ExtZaloPayComponent extends AppComponent
             'order'           => $order,
             'create_info'     => ['created' => new \MongoDate()],
         ]);
+    }
+
+    /**
+     * Hàm logIPN độc lập cho ZaloPay, lưu MongoDB như mô tả trong báo cáo.
+     * @param array $data
+     */
+    public function logIPN(array $data): void
+    {
+        $this->controller->loadModel('ThirdPartyLog'); 
+        $this->controller->ThirdPartyLog->saveWithKeys($data);
     }
 
     /**

@@ -734,6 +734,25 @@ class CheckoutController extends AppController
     // }
 
     /**
+     * ZaloPay init payment
+     * @param string|int $bill_id
+     * @return void
+     * @access public
+     */
+    public function zalopay_payment($bill_id)
+    {
+        $this->loadComponent('ExtZaloPay');
+        $result = $this->ExtZaloPay->paymentInApp($bill_id);
+
+        if (!empty($result['order_url'])) {
+            $this->redirect($result['order_url']);
+        } else {
+            $this->Flash->error(__('Khởi tạo thanh toán ZaloPay thất bại!'));
+            $this->redirect('/checkout/fail');
+        }
+    }
+
+    /**
      * ZaloPay complete
      * @return void
      * @access public
